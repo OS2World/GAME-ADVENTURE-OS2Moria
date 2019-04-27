@@ -1,0 +1,49 @@
+This file contains notes on compiling UMoria v5.5.2 and up under DJGPP.
+
+The source for UMoria v5.5.2 has been modified to allow compiling under DJGPP;
+however, there are a few things you need to do to make it work. First of all,
+you need PDCurses, a terminal package providing screen/keyboard i/o for Moria.
+You can find PDCurses in one of the version-specific toolkit directories in the
+gnu/djgpp/ directory of your local SimTel mirror (such as
+ftp.cdrom.com/pub/simtelnet/gnu/djgpp/v2tk/).
+
+You may need to edit the curses.h file for the following reasons:
+
+ - It defines the macro ANSI, which will confuse UMoria. Fix this by adding
+   some #ifdefs, #undefs, etc. to curses.h which save and restore the value of
+   ANSI as it existed before curses.h was included in another file (you can
+   contact me at bshadwick@juno.com for a copy of what I did or for more info)
+
+ - It looks for the macro __GO32__, or something like it, to be defined as an
+   indicator that it is being compiled under DJGPP. You should replace the
+   #ifdef __GO32__ or whatever with #ifdef DJGPP to make sure it compiles
+   correctly (again, you may contact me for help on this)
+
+You will need to compile all of the files in the UMoria source directory, along
+with ms_misc.c from the ibmpc directory.
+
+You will need to use the following defines/undefines while compiling UMoria:
+
+-DMSDOS
+-DPC_CURSES
+-Uunix
+
+You will also need to include the PDCurses library (after you have installed
+PDCurses):
+
+-lCURS
+
+You also MUST force DJGPP to default to the use of UNSIGNED chars, or else
+weird things will happen both in the UMoria code and in PDCurses:
+
+-funsigned-char
+
+I have not included a makefile for DJGPP, but if you would like one, contact me
+at bshadwick@juno.com. I can also give you a RHIDE project file if you are
+interested.
+
+NOTES: I have successfully compiled UMoria with NO errors under DJGPP v2.01 and
+       PDCurses v2.2 under RHIDE v1.2b, using the -Wall and -Werror flags (show
+       all warnings and treat all warnings as errors, respectively).
+
+- Ben Shadwick (bshadwick@juno.com)
